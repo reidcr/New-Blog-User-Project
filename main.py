@@ -11,7 +11,8 @@ from flask_gravatar import Gravatar
 from functools import wraps
 import os
 
-uri = os.getenv("DATABASE_URL")  # or other relevant config var
+# workaround to solve issue of SQLAlchemy no longer supporting "postgres://" URI
+uri = os.getenv("DATABASE_URL")
 if uri.startswith("postgres://"):
     uri = uri.replace("postgres://", "postgresql://", 1)
 # rest of connection code using the connection string `uri`
@@ -19,14 +20,12 @@ if uri.startswith("postgres://"):
 app = Flask(__name__)
 login_manager = LoginManager()
 login_manager.init_app(app)
-# app.config['SECRET_KEY'] = 'my_secret_key'
 app.config['SECRET_KEY'] = os.environ.get("SECRET_KEY")
 ckeditor = CKEditor(app)
 Bootstrap(app)
 
 # CONNECT TO DB
-# app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///blog.db"
-# app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DATABASE_URL")
+# provides choice between Postgres database or local sqlite database
 if uri is None:
     app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///blog.db"
 else:
