@@ -11,7 +11,7 @@ from flask_gravatar import Gravatar
 from functools import wraps
 import os
 
-uri = os.getenv("DATABASE_URL")  # or other relevant config var
+uri = os.environ.get("DATABASE_URL")  # or other relevant config var
 if uri.startswith("postgres://"):
     uri = uri.replace("postgres://", "postgresql://", 1)
 # rest of connection code using the connection string `uri`
