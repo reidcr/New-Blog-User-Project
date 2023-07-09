@@ -11,6 +11,11 @@ from flask_gravatar import Gravatar
 from functools import wraps
 import os
 
+uri = os.getenv("DATABASE_URL")  # or other relevant config var
+if uri.startswith("postgres://"):
+    uri = uri.replace("postgres://", "postgresql://", 1)
+# rest of connection code using the connection string `uri`
+
 app = Flask(__name__)
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -22,7 +27,7 @@ Bootstrap(app)
 # CONNECT TO DB
 # app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///blog.db"
 # app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DATABASE_URL")
-SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL?sslmode=require').replace('postgres://', 'postgresql://')
+SQLALCHEMY_DATABASE_URI = uri
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
